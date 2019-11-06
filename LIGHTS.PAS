@@ -2,7 +2,8 @@ program lights;
 
 uses graph, crt;
 
-var gDriver, gMode, error : Integer; num: char;
+var gDriver, gMode, error : Integer;
+    key1, key2 : char;
 
 procedure initScreen;
 begin
@@ -18,12 +19,13 @@ begin
 
     begin
       SetColor(4);
-      OutTextXY(80, 450, 'Opciones: F1 - Modo Juego   F2 - Modo Editor   F3 - Ayuda');
+      OutTextXY(40, 450, 'Opciones: F1 - Modo Juego   F2 - Modo Editor   F3 - Ayuda   F4 - Salir');
     end;
 end;
 
 procedure acercaDe;
 begin
+  initScreen;
   OutTextXY(200,20,'Lights Out - Sem II 2019');
   OutTextXY(150,30,'Arquitectura de computadores - Grupo 2');
   OutTextXY(20,70,'Autores:');
@@ -35,23 +37,37 @@ end;
 
 procedure modoJuego;
 begin
+  initScreen;
   OutTextXY(200, 250, 'Modalidad no implementada');
 end;
 
 procedure modoEditor;
 begin
+  initScreen;
   OutTextXY(200, 250, 'Modalidad no implementada');
+end;
+
+procedure quit;
+begin
+  CloseGraph;
+  halt;
 end;
 
 
 begin
-    {repeat until keypressed;
-    num:= readkey;
-    Writeln('Tecla: ', num);}
     initScreen;
-    modoJuego;
-    initScreen;
-    acercaDe;
-    Readln;
-    CloseGraph;
+
+    while TRUE do
+    begin
+      repeat until keypressed;
+      key1 := readkey;
+      if key1=#0 then
+      begin
+        key2:= readkey;
+        if key2=#59 then modoJuego;
+        if key2=#60 then modoEditor;
+        if key2=#61 then acercaDe;
+        if key2=#62 then quit;
+      end;
+    end;
 End.
