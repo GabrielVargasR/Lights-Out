@@ -2,7 +2,7 @@ program lights;
 
 uses graph, crt;
 
-var gDriver, gMode, error : Integer;
+var gDriver, gMode, error, i, j, k : Integer;
     key1, key2 : char;
 
 procedure initScreen;
@@ -56,7 +56,22 @@ end;
 procedure modoJuego;
 begin
   initScreen;
-  OutTextXY(200, 250, 'Modalidad no implementada');
+  SetColor(15);
+
+  for i:=1 to 5 do
+    begin
+      j:= i*70;
+      k:= 70;
+      while k < 420 do
+        begin
+          FillEllipse(j, k, 25, 25);
+          k:= k+70;
+        end;
+    end;
+
+    SetFillStyle(1, 14);
+    FillEllipse(210, 210, 25, 25);
+
 end;
 
 procedure modoEditor;
