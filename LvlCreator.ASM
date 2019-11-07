@@ -152,8 +152,6 @@ inicio: mov ax, ds ; se mueve primero a un registro porque no se puede hacer un 
         mov bx, handle
         int 21h; cierra archivo
 
-
-
 final:
         mov ax, 4C00h ; para finalizacion en 21h
         int 21h ; termina programa

@@ -4,6 +4,9 @@ uses graph, crt;
 
 var gDriver, gMode, error, i, j, k : Integer;
     key1, key2 : char;
+    keyNum1, keyNum2: Integer;
+
+label lab;
 
 procedure initScreen;
 begin
@@ -56,7 +59,10 @@ end;
 procedure modoJuego;
 begin
   initScreen;
+
+  {Carga archivo}
   SetColor(15);
+  SetFillStyle(1, 15);
 
   for i:=1 to 5 do
     begin
@@ -72,12 +78,34 @@ begin
     SetFillStyle(1, 14);
     FillEllipse(210, 210, 25, 25);
 
+    {Recibe coordenadas y pinta}
+    repeat until keypressed;
+    key1 := readkey;
+    repeat until keypressed;
+    key2 := readkey;
+
+    keyNum1 := ord(key1) - $30;
+    keyNum2 := ord(key2) - $30;
+
+    keyNum1 := keyNum1 * 70;
+    keyNum2 := keyNum2 * 70;
+    FillEllipse(keyNum2, keyNum1, 25, 25);
+
 end;
 
 procedure modoEditor;
 begin
   initScreen;
   OutTextXY(200, 250, 'Modalidad no implementada');
+
+  repeat until keypressed;
+  key1 := readkey;
+  repeat until keypressed;
+  key2 := readkey;
+
+  OutTextXY(200, 270, key1);
+  OutTextXY(200, 280, key2);
+
 end;
 
 procedure quit;
