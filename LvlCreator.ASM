@@ -1,17 +1,7 @@
-; Autor: Gabriel Vargas Rodríguez - 2018103129
+; Autores: Gabriel Vargas Rodríguez - 2018103129
+;          David Solano Fuentes - 2018167435
 ; Arquitectura de Computadores - Grupo 2
-
-
-
-
-; -------- Manual de usuario ----------
-
-
-; -------- Análisis de resultados ---------
-
-
-
-datos segment
+data segment
 
   nom db "lvl001.txt$", 0
   handle dw ?
@@ -19,97 +9,30 @@ datos segment
 
   contador dw 1
 
-datos ends
+data ends
+
+code segment
+
+   assume  cs:code, ds:data
 
 
-pila segment stack 'stack'
-
-   dw 256 dup (?)
-
-pila ends
-
-
-codigo segment
-
-   assume  cs:codigo, ds:datos, ss:pila
-
-
-cambiaNom proc
-    push ax
-    push cx
-    push di
-
-    normal:
-    xor ah, ah
-    xor di, di
-    mov di, 3
-    mov ax, contador
-    mov cx, 10
-
-    cmp ax, 10
-    jl unDigito
-    cmp ax, 100
-    jl dosDigitos
-
-    div cl; contador / 10
-    add ah, 30h; para ascii
-    mov byte ptr [nom + 6], ah; último dígito queda en el ah
-    xor ah, ah; queda solo al en el ax
-    div cl; cociente de contadorNivel / 10
-    add al, 30h
-    mov byte ptr [nom + di], al
-    inc di
-    add ah, 30h
-    mov byte ptr [nom + di], ah
-    jmp finCambiaNom
-
-    unDigito:
-        mov byte ptr [nom + di], '0'
-        inc di
-        mov byte ptr [nom + di], '0'
-        inc di
-        add al, 30h
-        mov byte ptr [nom + di], al
-        jmp finCambiaNom
-    dosDigitos:
-        mov byte ptr [nom + di], '0'
-        inc di
-        div cl
-        add al, 30h
-        mov byte ptr [nom + di], al
-        inc di
-        add ah, 30h
-        mov byte ptr [nom + di], ah
-
-    finCambiaNom:
-    pop di
-    pop cx
-    pop ax
-    ret
-cambiaNom endP
-
-
-inicio: mov ax, ds ; se mueve primero a un registro porque no se puede hacer un mov entre dos segmentos
-        mov es, ax ; para no perder la direccion del psp
-
-        mov ax, datos
-        mov ds, ax
-
-        mov ax, pila
-        mov ss, ax
-
+creando proc near
+    public creando
+        push bp
+        mov bp, sp
         xor di, di
         xor si, si
 
-        mov si, 82h
+        push ds
+        lds si, ss:[bp+4];matrizEditor
         mov cx, 5
-
         linealoop:
             mov bx, 5
             linea:
             cmp bx, 0
             je finLinea
-            mov ah, byte ptr es:[si]
+            mov ah, byte ptr ds:[si]
+            add ah,30h
             mov byte ptr [cont+di], ah
             inc si
             inc di
@@ -129,7 +52,58 @@ inicio: mov ax, ds ; se mueve primero a un registro porque no se puede hacer un 
         mov ax, 3E00h
         int 21h; cierra archivo que creó
         inc contador
-        call cambiaNom; intenta el siguiente nombre
+
+        push ax
+        push cx
+        push di
+
+        normal:
+        xor ah, ah
+        xor di, di
+        mov di, 3
+        mov ax, contador
+        mov cx, 10
+
+        cmp ax, 10
+        jl unDigito
+        cmp ax, 100
+        jl dosDigitos
+
+        div cl; contador / 10
+        add ah, 30h; para ascii
+        mov byte ptr [nom + 6], ah; último dígito queda en el ah
+        xor ah, ah; queda solo al en el ax
+        div cl; cociente de contadorNivel / 10
+        add al, 30h
+        mov byte ptr [nom + di], al
+        inc di
+        add ah, 30h
+        mov byte ptr [nom + di], ah
+        jmp finCambiaNom
+
+        unDigito:
+            mov byte ptr [nom + di], '0'
+            inc di
+            mov byte ptr [nom + di], '0'
+            inc di
+            add al, 30h
+            mov byte ptr [nom + di], al
+            jmp finCambiaNom
+        dosDigitos:
+            mov byte ptr [nom + di], '0'
+            inc di
+            div cl
+            add al, 30h
+            mov byte ptr [nom + di], al
+            inc di
+            add ah, 30h
+            mov byte ptr [nom + di], ah
+
+        finCambiaNom:
+        pop di
+        pop cx
+        pop ax
+
         jmp abre
 
         crea:
@@ -144,18 +118,18 @@ inicio: mov ax, ds ; se mueve primero a un registro porque no se puede hacer un 
         mov ax, 4000h
         mov bx, handle
         mov cx, 30
-        lea dx, cont
+        lea dx, cont      ;variable ascii
         int 21h
-        jmp final
 
         mov ax, 3E00h
         mov bx, handle
         int 21h; cierra archivo
 
-final:
-        mov ax, 4C00h ; para finalizacion en 21h
-        int 21h ; termina programa
+        pop ds
+        pop bp
+        ret 100
 
-codigo ends
+creando endP
+code ends
 
-end inicio ; para que apunte a inicio cuando vaya a correr el programa
+END

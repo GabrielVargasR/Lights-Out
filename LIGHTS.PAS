@@ -1,12 +1,19 @@
 program lights;
 
+{Autores: Gabriel Vargas Rodríguez - 2018103129
+          David Solano Fuentes - 2018167435
+ Arquitectura de Computadores - Grupo 2}
+
 uses graph, crt;
+
+  type
+   matriz = array[1..5, 1..5] of integer;
 
 var gDriver, gMode, error, i, j, k, l : Integer;
     key1, key2 : char;
     keyNum1, keyNum2: Integer;
-    matrizJuego: array[1..5, 1..5] of Integer;
-    matrizEditor: array[1..5, 1..5] of shortInt;
+    matrizJuego: matriz;
+    matrizEditor: matriz;
 
 
 procedure initScreen;
@@ -200,6 +207,7 @@ end;
 
 procedure iniciaEditor;
 begin
+  SetColor(15);
   SetFillStyle(1, 15);
   for i:=1 to 5 do
     begin
@@ -221,14 +229,13 @@ begin
     end;
 end;
 
+procedure creando(var mat: matriz); external;
+{$L LVLCRE~1.obj}
+
 procedure modoEditor;
 label comienzoEditor;
 begin
   initScreen;
-
-  SetColor(15);
-  SetFillStyle(1, 15);
-
   iniciaEditor;
 
   while TRUE do
@@ -239,7 +246,10 @@ begin
     if key1 =#0 then menuFn;
     if key1 =#13 then
       begin
-        {guardaNivel}
+        creando(matrizEditor);
+        OutTextXY(150, 390, 'Nivel guardado!');
+        sleep;
+        initScreen;
         iniciaEditor;
         goto comienzoEditor;
       end;
