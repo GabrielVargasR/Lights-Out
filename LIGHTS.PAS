@@ -1,8 +1,58 @@
 program lights;
 
-{Autores: Gabriel Vargas Rodríguez - 2018103129
-          David Solano Fuentes - 2018167435
- Arquitectura de Computadores - Grupo 2}
+{
+********************************************************************************
+                                  Autores
+********************************************************************************
+
+- Gabriel Vargas Rodríguez - 2018103129
+- David Solano Fuentes - 2018167435
+
+Arquitectura de Computadores - Grupo 2
+
+********************************************************************************
+                              Manual de usuario
+********************************************************************************
+
+Opciones:
+    F1 - Modo juego
+    F2 - Modo editor
+    F3 - Acerca de y Ayuda
+    F4 - Salir
+
+  Modo juego
+    - El objetivo es apagar todas las luces
+    - Para seleccionar una luz indique el numero de fila y luego el de columna
+    - Cada luz seleccinada cambiara el estado de la misma y de las 4 luces adyacentes
+    - Para saltar al siguiente nivel, presione la tecla "s"
+
+  Modo editor:
+    - Seleccione las luces que desea prender indicando el numero de fila seguido por el numero de columna
+    - Una vez finalizado su nivel, presione enter
+
+********************************************************************************
+                          Ligas realizadas
+********************************************************************************
+  - Sleep (Inline): ciclo de nops para hacer un delay a mensajes de éxito en modo de juego y modo editor
+  - loadLvl (biblioteca): módulo para abrir un documento con la matriz del nivel correspondiente
+  - creando (biblioteca): módulo para crear archivo de nivel en modo editor. Toma la matriz correspondiente y
+    escribe un archivo de texto
+
+********************************************************************************
+                            Análisis de resultados
+********************************************************************************
+  - Modo juego: B - no carga bien los niveles
+  - Modo editor: B - no guarda bien los niveles
+  - Valida input para modo juego y editor: A
+  - Acerca de y ayuda: A
+  - Salir de la aplicación: A
+  - Liga inline: A
+  - Liga loadlvl: D - se reconoce el archivo, pero faltó implementación
+  - Liga creando: B - no se crea el archivo
+  - Puzzles: A
+  - Manejo de ventanas: A
+  - Modo gráfico: A
+}
 
 uses graph, crt;
 
@@ -14,6 +64,7 @@ var gDriver, gMode, error, i, j, k, l : Integer;
     keyNum1, keyNum2: Integer;
     matrizJuego: matriz;
     matrizEditor: matriz;
+    nivel : string;
 
 
 procedure initScreen;
@@ -150,6 +201,9 @@ begin
   end;
 end;
 
+function loadLvl: string; external;
+{$L loader.obj}
+
 procedure modoJuego;
 label comienzoJuego;
 begin
@@ -166,7 +220,11 @@ begin
       if key1 =#0 then menuFn;
       if key1 = 's' then
         begin
-          {next;}
+          {carga nuevo nivel}
+          OutTextXY(150, 390, 'Cambiando nivel');
+          sleep;
+          initScreen;
+          SetColor(15);
           loadMat;
           pintaMatriz;
           goto comienzoJuego;
@@ -265,6 +323,7 @@ end;
 
 begin
   initScreen;
+  nivel := 'levels\LVL001.txt';
   loadMat;
 
   while TRUE do
