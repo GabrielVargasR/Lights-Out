@@ -2,10 +2,10 @@ program lights;
 
 uses graph, crt;
 
-var gDriver, gMode, error, i, j, k : Integer;
+var gDriver, gMode, error, i, j, k, l : Integer;
     key1, key2 : char;
     keyNum1, keyNum2: Integer;
-    matrizJuego: array[0..4, 0..4] of integer;
+    matrizJuego: array[1..5, 1..5] of integer;
 
 procedure initScreen;
 begin
@@ -34,6 +34,7 @@ end;
 procedure acercaDe; Forward;
 procedure modoJuego; Forward;
 procedure modoEditor; Forward;
+{function validInp(num1,num2: word): Integer; Forward;}
 
 procedure menuFn;
 begin
@@ -42,6 +43,17 @@ begin
   if key2=#60 then modoEditor;
   if key2=#61 then acercaDe;
   if key2=#62 then quit;
+end;
+
+procedure loadMat;
+begin
+  for i := 1 to 5 do
+  begin
+    for i := 1 to 5 do
+    begin
+      matrizJuego[i,j]:=1;
+    end;
+  end;
 end;
 
 procedure acercaDe;
@@ -81,35 +93,28 @@ begin
     end;
 end;
 
-function validInp(num1,num2: Integer): boolean;
-begin
-
-end;
-
 procedure modoJuego;
 begin
   initScreen;
-  {Carga archivo}
   SetColor(15);
-  SetFillStyle(1, 15);
 
-  for i:=1 to 5 do
-    begin
-      j:= i*70;
-      k:= 70;
-      while k < 420 do
+    {Inicializa pantalla según los valores de la matriz de juego}
+    k:=0;
+    for i:=1 to 5 do
+      begin
+        k:= k+70;
+        l:=0;
+        for j:=1 to 5 do
         begin
-          FillEllipse(j, k, 25, 25);
-          k:= k+70;
+          l:= l+70;
+          if matrizJuego[i,j] = 1 then SetFillStyle(1, 14)
+          else SetFillStyle(1, 15);
+          FillEllipse(k, l, 25, 25);
         end;
-    end;
-
-    SetFillStyle(1, 14);
-    FillEllipse(210, 210, 25, 25);
+      end;
 
     while TRUE do
     begin
-      {Recibe coordenadas y pinta}
       repeat until keypressed;
       key1 := readkey;
       if key1 =#0 then menuFn;
@@ -121,6 +126,7 @@ begin
 
       keyNum1 := keyNum1 * 70;
       keyNum2 := keyNum2 * 70;
+      SetFillStyle(1, 14);
       FillEllipse(keyNum2, keyNum1, 25, 25);
     end;
 end;
@@ -151,6 +157,7 @@ end;
 
 begin
   initScreen;
+  loadMat;
 
   while TRUE do
     begin
