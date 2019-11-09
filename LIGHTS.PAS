@@ -5,8 +5,7 @@ uses graph, crt;
 var gDriver, gMode, error, i, j, k : Integer;
     key1, key2 : char;
     keyNum1, keyNum2: Integer;
-
-label lab;
+    matrizJuego: array[0..4, 0..4] of integer;
 
 procedure initScreen;
 begin
@@ -24,6 +23,25 @@ begin
       SetColor(4);
       OutTextXY(40, 450, 'Opciones: F1 - Modo Juego   F2 - Modo Editor   F3 - Ayuda   F4 - Salir');
     end;
+end;
+
+procedure quit;
+begin
+  CloseGraph;
+  halt;
+end;
+
+procedure acercaDe; Forward;
+procedure modoJuego; Forward;
+procedure modoEditor; Forward;
+
+procedure menuFn;
+begin
+  key2:= readkey;
+  if key2=#59 then modoJuego;
+  if key2=#60 then modoEditor;
+  if key2=#61 then acercaDe;
+  if key2=#62 then quit;
 end;
 
 procedure acercaDe;
@@ -54,12 +72,23 @@ begin
   OutTextXY(40, 350, '- Seleccione las luces que desea prender indicando:');
   OutTextXY(55, 360, 'el numero de fila seguido por el numero de columna');
   OutTextXY(40, 370, '- Una vez finalizado su nivel, presione enter');
+
+  while TRUE do
+    begin
+      repeat until keypressed;
+      key1:= readkey;
+      if key1=#0 then menuFn;
+    end;
+end;
+
+function validInp(num1,num2: Integer): boolean;
+begin
+
 end;
 
 procedure modoJuego;
 begin
   initScreen;
-
   {Carga archivo}
   SetColor(15);
   SetFillStyle(1, 15);
@@ -78,57 +107,55 @@ begin
     SetFillStyle(1, 14);
     FillEllipse(210, 210, 25, 25);
 
-    {Recibe coordenadas y pinta}
-    repeat until keypressed;
-    key1 := readkey;
-    repeat until keypressed;
-    key2 := readkey;
+    while TRUE do
+    begin
+      {Recibe coordenadas y pinta}
+      repeat until keypressed;
+      key1 := readkey;
+      if key1 =#0 then menuFn;
+      repeat until keypressed;
+      key2 := readkey;
 
-    keyNum1 := ord(key1) - $30;
-    keyNum2 := ord(key2) - $30;
+      keyNum1 := ord(key1) - $30;
+      keyNum2 := ord(key2) - $30;
 
-    keyNum1 := keyNum1 * 70;
-    keyNum2 := keyNum2 * 70;
-    FillEllipse(keyNum2, keyNum1, 25, 25);
-
+      keyNum1 := keyNum1 * 70;
+      keyNum2 := keyNum2 * 70;
+      FillEllipse(keyNum2, keyNum1, 25, 25);
+    end;
 end;
 
 procedure modoEditor;
 begin
   initScreen;
-  OutTextXY(200, 250, 'Modalidad no implementada');
 
-  repeat until keypressed;
-  key1 := readkey;
-  repeat until keypressed;
-  key2 := readkey;
+  SetColor(15);
+  SetFillStyle(1, 15);
 
-  OutTextXY(200, 270, key1);
-  OutTextXY(200, 280, key2);
+  for i:=1 to 5 do
+    begin
+      j:= i*70;
+      k:= 70;
+      while k < 420 do
+        begin
+          FillEllipse(j, k, 25, 25);
+          k:= k+70;
+        end;
+    end;
 
+  while TRUE do
+  begin
+    menuFn;
+  end;
 end;
 
-procedure quit;
 begin
-  CloseGraph;
-  halt;
-end;
+  initScreen;
 
-
-begin
-    initScreen;
-
-    while TRUE do
+  while TRUE do
     begin
       repeat until keypressed;
       key1 := readkey;
-      if key1=#0 then
-      begin
-        key2:= readkey;
-        if key2=#59 then modoJuego;
-        if key2=#60 then modoEditor;
-        if key2=#61 then acercaDe;
-        if key2=#62 then quit;
-      end;
+      if key1=#0 then menuFn;
     end;
-End.
+End.
