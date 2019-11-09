@@ -2,11 +2,10 @@ program lights;
 
 uses graph, crt;
 
-var gDriver, gMode, error, i, j, k : Integer;
+var gDriver, gMode, error, i, j, k, l : Integer;
     key1, key2 : char;
     keyNum1, keyNum2: Integer;
-
-label lab;
+    matrizJuego: array[1..5, 1..5] of integer;
 
 procedure initScreen;
 begin
@@ -24,6 +23,37 @@ begin
       SetColor(4);
       OutTextXY(40, 450, 'Opciones: F1 - Modo Juego   F2 - Modo Editor   F3 - Ayuda   F4 - Salir');
     end;
+end;
+
+procedure quit;
+begin
+  CloseGraph;
+  halt;
+end;
+
+procedure acercaDe; Forward;
+procedure modoJuego; Forward;
+procedure modoEditor; Forward;
+{function validInp(num1,num2: word): Integer; Forward;}
+
+procedure menuFn;
+begin
+  key2:= readkey;
+  if key2=#59 then modoJuego;
+  if key2=#60 then modoEditor;
+  if key2=#61 then acercaDe;
+  if key2=#62 then quit;
+end;
+
+procedure loadMat;
+begin
+  for i := 1 to 5 do
+  begin
+    for i := 1 to 5 do
+    begin
+      matrizJuego[i,j]:=1;
+    end;
+  end;
 end;
 
 procedure acercaDe;
@@ -54,13 +84,57 @@ begin
   OutTextXY(40, 350, '- Seleccione las luces que desea prender indicando:');
   OutTextXY(55, 360, 'el numero de fila seguido por el numero de columna');
   OutTextXY(40, 370, '- Una vez finalizado su nivel, presione enter');
+
+  while TRUE do
+    begin
+      repeat until keypressed;
+      key1:= readkey;
+      if key1=#0 then menuFn;
+    end;
 end;
 
 procedure modoJuego;
 begin
   initScreen;
+  SetColor(15);
 
-  {Carga archivo}
+    {Inicializa pantalla según los valores de la matriz de juego}
+    k:=0;
+    for i:=1 to 5 do
+      begin
+        k:= k+70;
+        l:=0;
+        for j:=1 to 5 do
+        begin
+          l:= l+70;
+          if matrizJuego[i,j] = 1 then SetFillStyle(1, 14)
+          else SetFillStyle(1, 15);
+          FillEllipse(k, l, 25, 25);
+        end;
+      end;
+
+    while TRUE do
+    begin
+      repeat until keypressed;
+      key1 := readkey;
+      if key1 =#0 then menuFn;
+      repeat until keypressed;
+      key2 := readkey;
+
+      keyNum1 := ord(key1) - $30;
+      keyNum2 := ord(key2) - $30;
+
+      keyNum1 := keyNum1 * 70;
+      keyNum2 := keyNum2 * 70;
+      SetFillStyle(1, 14);
+      FillEllipse(keyNum2, keyNum1, 25, 25);
+    end;
+end;
+
+procedure modoEditor;
+begin
+  initScreen;
+
   SetColor(15);
   SetFillStyle(1, 15);
 
@@ -75,60 +149,20 @@ begin
         end;
     end;
 
-    SetFillStyle(1, 14);
-    FillEllipse(210, 210, 25, 25);
-
-    {Recibe coordenadas y pinta}
-    repeat until keypressed;
-    key1 := readkey;
-    repeat until keypressed;
-    key2 := readkey;
-
-    keyNum1 := ord(key1) - $30;
-    keyNum2 := ord(key2) - $30;
-
-    keyNum1 := keyNum1 * 70;
-    keyNum2 := keyNum2 * 70;
-    FillEllipse(keyNum2, keyNum1, 25, 25);
-
+  while TRUE do
+  begin
+    menuFn;
+  end;
 end;
 
-procedure modoEditor;
 begin
   initScreen;
-  OutTextXY(200, 250, 'Modalidad no implementada');
+  loadMat;
 
-  repeat until keypressed;
-  key1 := readkey;
-  repeat until keypressed;
-  key2 := readkey;
-
-  OutTextXY(200, 270, key1);
-  OutTextXY(200, 280, key2);
-
-end;
-
-procedure quit;
-begin
-  CloseGraph;
-  halt;
-end;
-
-
-begin
-    initScreen;
-
-    while TRUE do
+  while TRUE do
     begin
       repeat until keypressed;
       key1 := readkey;
-      if key1=#0 then
-      begin
-        key2:= readkey;
-        if key2=#59 then modoJuego;
-        if key2=#60 then modoEditor;
-        if key2=#61 then acercaDe;
-        if key2=#62 then quit;
-      end;
+      if key1=#0 then menuFn;
     end;
-End.
+End.
