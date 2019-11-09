@@ -5,8 +5,8 @@ uses graph, crt;
 var gDriver, gMode, error, i, j, k, l : Integer;
     key1, key2 : char;
     keyNum1, keyNum2: Integer;
-    matrizJuego: array[1..5, 1..5] of integer;
-    matrizEditor: array[1..5, 1..5] of integer;
+    matrizJuego: array[1..5, 1..5] of shortInt;
+    matrizEditor: array[1..5, 1..5] of shortInt;
 
 procedure initScreen;
 begin
@@ -195,7 +195,6 @@ begin
     FillEllipse(keyNum2, keyNum1, 25, 25);
   end;
 end;
-
 
 
 begin
