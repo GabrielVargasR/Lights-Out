@@ -5,8 +5,18 @@ uses graph, crt;
 var gDriver, gMode, error, i, j, k, l : Integer;
     key1, key2 : char;
     keyNum1, keyNum2: Integer;
-    matrizJuego: array[1..5, 1..5] of shortInt;
+    matrizJuego: array[1..5, 1..5] of Integer;
     matrizEditor: array[1..5, 1..5] of shortInt;
+
+function inc(num: Integer): Integer;
+begin
+  inline($58/$40/$50);
+end;
+
+function dec(num: Integer): Integer;
+begin
+  inline($8B/$DC/$36/$8B/$47/$06/$48/$50);
+end;
 
 procedure initScreen;
 begin
@@ -35,7 +45,6 @@ end;
 procedure acercaDe; Forward;
 procedure modoJuego; Forward;
 procedure modoEditor; Forward;
-{function validInp(num1,num2: word): Integer; Forward;}
 
 procedure menuFn;
 begin
@@ -94,6 +103,26 @@ begin
     end;
 end;
 
+procedure actualiza(coord1, coord2: Integer);
+begin
+  if ((coord1>0) and (coord1<6)) and ((coord2>0) and (coord2<6)) then
+  begin
+    if matrizJuego[coord1, coord2] = 1 then
+      begin
+        SetFillStyle(1, 15);
+        matrizJuego[coord1, coord2]:=0;
+      end
+      else
+        begin
+          SetFillStyle(1, 14);
+          matrizJuego[coord1, coord2]:=1;
+        end;
+        coord1 := coord1 * 70;
+        coord2 := coord2 * 70;
+        FillEllipse(coord2, coord1, 25, 25);
+  end;
+end;
+
 procedure modoJuego;
 begin
   initScreen;
@@ -125,20 +154,16 @@ begin
       keyNum1 := ord(key1) - $30;
       keyNum2 := ord(key2) - $30;
 
-      if matrizJuego[keyNum1, keyNum2] = 1 then
-        begin
-          SetFillStyle(1, 15);
-          matrizJuego[keyNum1, keyNum2]:=0;
-        end
-        else
-          begin
-            SetFillStyle(1, 14);
-            matrizJuego[keyNum1, keyNum2]:=1;
-          end;
+      actualiza(keyNum1, keyNum2);
+      actualiza(keyNum1+1, keyNum2);
+      actualiza(keyNum1-1, keyNum2);
+      actualiza(keyNum1, keyNum2+1);
+      actualiza(keyNum1, keyNum2-1);
 
       keyNum1 := keyNum1 * 70;
       keyNum2 := keyNum2 * 70;
-      FillEllipse(keyNum2, keyNum1, 25, 25);
+
+
     end;
 end;
 
