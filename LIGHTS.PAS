@@ -8,6 +8,7 @@ var gDriver, gMode, error, i, j, k, l : Integer;
     matrizJuego: array[1..5, 1..5] of Integer;
     matrizEditor: array[1..5, 1..5] of shortInt;
 
+
 procedure initScreen;
 begin
   gDriver := Detect;
@@ -143,6 +144,7 @@ begin
 end;
 
 procedure modoJuego;
+label comienzoJuego;
 begin
   initScreen;
   SetColor(15);
@@ -151,10 +153,17 @@ begin
 
     while TRUE do
     begin
+      comienzoJuego:
       repeat until keypressed;
       key1 := readkey;
       if key1 =#0 then menuFn;
-      {if key1 = 's' then next;}
+      if key1 = 's' then
+        begin
+          {next;}
+          loadMat;
+          pintaMatriz;
+          goto comienzoJuego;
+        end;
       repeat until keypressed;
       key2 := readkey;
 
@@ -189,13 +198,9 @@ begin
     end;
 end;
 
-procedure modoEditor;
+procedure iniciaEditor;
 begin
-  initScreen;
-
-  SetColor(15);
   SetFillStyle(1, 15);
-
   for i:=1 to 5 do
     begin
       j:= i*70;
@@ -214,35 +219,39 @@ begin
         matrizEditor[i,j]:=0;
       end;
     end;
+end;
+
+procedure modoEditor;
+label comienzoEditor;
+begin
+  initScreen;
+
+  SetColor(15);
+  SetFillStyle(1, 15);
+
+  iniciaEditor;
 
   while TRUE do
   begin
+    comienzoEditor:
     repeat until keypressed;
     key1 := readkey;
     if key1 =#0 then menuFn;
+    if key1 =#13 then
+      begin
+        {guardaNivel}
+        iniciaEditor;
+        goto comienzoEditor;
+      end;
     repeat until keypressed;
     key2 := readkey;
 
     keyNum1 := ord(key1) - $30;
     keyNum2 := ord(key2) - $30;
 
-    if matrizEditor[keyNum1, keyNum2] = 1 then
-      begin
-        SetFillStyle(1, 15);
-        matrizEditor[keyNum1, keyNum2]:=0;
-      end
-      else
-        begin
-          SetFillStyle(1, 14);
-          matrizEditor[keyNum1, keyNum2]:=1;
-        end;
-
-    keyNum1 := keyNum1 * 70;
-    keyNum2 := keyNum2 * 70;
-    FillEllipse(keyNum2, keyNum1, 25, 25);
+    actualiza(keyNum1, keyNum2);
   end;
 end;
-
 
 begin
   initScreen;
