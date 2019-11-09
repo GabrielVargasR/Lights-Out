@@ -49,7 +49,7 @@ procedure loadMat;
 begin
   for i := 1 to 5 do
   begin
-    for i := 1 to 5 do
+    for j := 1 to 5 do
     begin
       matrizJuego[i,j]:=1;
     end;
