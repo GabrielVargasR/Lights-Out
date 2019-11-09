@@ -8,16 +8,6 @@ var gDriver, gMode, error, i, j, k, l : Integer;
     matrizJuego: array[1..5, 1..5] of Integer;
     matrizEditor: array[1..5, 1..5] of shortInt;
 
-function inc(num: Integer): Integer;
-begin
-  inline($58/$40/$50);
-end;
-
-function dec(num: Integer): Integer;
-begin
-  inline($8B/$DC/$36/$8B/$47/$06/$48/$50);
-end;
-
 procedure initScreen;
 begin
   gDriver := Detect;
@@ -61,9 +51,38 @@ begin
   begin
     for j := 1 to 5 do
     begin
-      matrizJuego[i,j]:=1;
+      matrizJuego[i,j]:=0;
     end;
   end;
+
+  matrizJuego[3, 3]:= 1;
+  matrizJuego[4, 3]:= 1;
+  matrizJuego[2, 3]:= 1;
+  matrizJuego[3, 2]:= 1;
+  matrizJuego[3, 4]:= 1;
+end;
+
+procedure pintaMatriz;
+begin
+  {Inicializa pantalla según los valores de la matriz de juego}
+  k:=0;
+  for i:=1 to 5 do
+    begin
+      k:= k+70;
+      l:=0;
+      for j:=1 to 5 do
+      begin
+        l:= l+70;
+        if matrizJuego[i,j] = 1 then SetFillStyle(1, 14)
+          else SetFillStyle(1, 15);
+        FillEllipse(k, l, 25, 25);
+      end;
+    end;
+end;
+
+procedure sleep;
+begin
+  inline($BB/$32/$00/$B9/$DC/$FF/$90/$E2/$FD/$4B/$83/$FB/$00/$75/$F4);
 end;
 
 procedure acercaDe;
@@ -127,27 +146,15 @@ procedure modoJuego;
 begin
   initScreen;
   SetColor(15);
+  pintaMatriz;
 
-    {Inicializa pantalla según los valores de la matriz de juego}
-    k:=0;
-    for i:=1 to 5 do
-      begin
-        k:= k+70;
-        l:=0;
-        for j:=1 to 5 do
-        begin
-          l:= l+70;
-          if matrizJuego[i,j] = 1 then SetFillStyle(1, 14)
-            else SetFillStyle(1, 15);
-          FillEllipse(k, l, 25, 25);
-        end;
-      end;
 
     while TRUE do
     begin
       repeat until keypressed;
       key1 := readkey;
       if key1 =#0 then menuFn;
+      {if key1 = 's' then next;}
       repeat until keypressed;
       key2 := readkey;
 
@@ -160,9 +167,24 @@ begin
       actualiza(keyNum1, keyNum2+1);
       actualiza(keyNum1, keyNum2-1);
 
-      keyNum1 := keyNum1 * 70;
-      keyNum2 := keyNum2 * 70;
+      k:=0;
+      for i:=1 to 5 do
+        begin
+          for j:=1 to 5 do
+          begin
+            k:= k + matrizJuego[i,j];
+          end;
+        end;
 
+      if k=0 then
+        begin
+          OutTextXY(150, 390, 'Nivel completado!');
+          sleep;
+          initScreen;
+          SetColor(15);
+          loadMat;
+          pintaMatriz;
+        end;
 
     end;
 end;
