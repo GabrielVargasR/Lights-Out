@@ -6,6 +6,7 @@ var gDriver, gMode, error, i, j, k, l : Integer;
     key1, key2 : char;
     keyNum1, keyNum2: Integer;
     matrizJuego: array[1..5, 1..5] of integer;
+    matrizEditor: array[1..5, 1..5] of integer;
 
 procedure initScreen;
 begin
@@ -49,7 +50,7 @@ procedure loadMat;
 begin
   for i := 1 to 5 do
   begin
-    for i := 1 to 5 do
+    for j := 1 to 5 do
     begin
       matrizJuego[i,j]:=1;
     end;
@@ -108,7 +109,7 @@ begin
         begin
           l:= l+70;
           if matrizJuego[i,j] = 1 then SetFillStyle(1, 14)
-          else SetFillStyle(1, 15);
+            else SetFillStyle(1, 15);
           FillEllipse(k, l, 25, 25);
         end;
       end;
@@ -124,9 +125,19 @@ begin
       keyNum1 := ord(key1) - $30;
       keyNum2 := ord(key2) - $30;
 
+      if matrizJuego[keyNum1, keyNum2] = 1 then
+        begin
+          SetFillStyle(1, 15);
+          matrizJuego[keyNum1, keyNum2]:=0;
+        end
+        else
+          begin
+            SetFillStyle(1, 14);
+            matrizJuego[keyNum1, keyNum2]:=1;
+          end;
+
       keyNum1 := keyNum1 * 70;
       keyNum2 := keyNum2 * 70;
-      SetFillStyle(1, 14);
       FillEllipse(keyNum2, keyNum1, 25, 25);
     end;
 end;
@@ -149,11 +160,43 @@ begin
         end;
     end;
 
+  for i := 1 to 5 do
+    begin
+      for j := 1 to 5 do
+      begin
+        matrizEditor[i,j]:=0;
+      end;
+    end;
+
   while TRUE do
   begin
-    menuFn;
+    repeat until keypressed;
+    key1 := readkey;
+    if key1 =#0 then menuFn;
+    repeat until keypressed;
+    key2 := readkey;
+
+    keyNum1 := ord(key1) - $30;
+    keyNum2 := ord(key2) - $30;
+
+    if matrizEditor[keyNum1, keyNum2] = 1 then
+      begin
+        SetFillStyle(1, 15);
+        matrizEditor[keyNum1, keyNum2]:=0;
+      end
+      else
+        begin
+          SetFillStyle(1, 14);
+          matrizEditor[keyNum1, keyNum2]:=1;
+        end;
+
+    keyNum1 := keyNum1 * 70;
+    keyNum2 := keyNum2 * 70;
+    FillEllipse(keyNum2, keyNum1, 25, 25);
   end;
 end;
+
+
 
 begin
   initScreen;
